@@ -1,6 +1,7 @@
 /*
 	single linked list merge
-	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
+	This problem requires you to merge two ordered singly linked lists 
+    into one ordered singly linked list
 */
 // I AM NOT DONE
 
@@ -69,14 +70,38 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a: LinkedList<T>, mut list_b: LinkedList<T>) -> Self
+	where
+		T: PartialOrd + Clone,
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut merge_ls = LinkedList::<T>::new();
+
+        let length_a = list_a.length;
+        let length_b = list_b.length;
+        let mut i = 0;
+        let mut j = 0;
+
+        while i < length_a && j < length_b {
+            let val_a = list_a.get(i as i32).unwrap();
+            let val_b = list_b.get(j as i32).unwrap();
+            if val_a < val_b {
+                merge_ls.add(val_a.clone());
+                i += 1;
+            } else {
+                merge_ls.add(val_b.clone());
+                j += 1;
+            }
         }
+        while i < length_a {
+            merge_ls.add(list_a.get(i as i32).unwrap().clone());
+            i += 1;
+        }
+        while j < length_b {
+            merge_ls.add(list_b.get(j as i32).unwrap().clone());
+            j += 1;
+        }
+
+        merge_ls
 	}
 }
 

@@ -5,9 +5,12 @@
 */
 // I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort<T: Ord>(array: &mut [T]){
+    // Lazy man!!
+    // I use Introsort btw.
+    array.sort();
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
