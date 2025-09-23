@@ -27,6 +27,7 @@ fn main() {
             // You must take an action before you update a shared value
             let mut jobs = status_shared.lock().unwrap();
             jobs.jobs_completed += 1;
+            println!("{}", jobs.jobs_completed);
         });
         handles.push(handle);
     }
