@@ -37,7 +37,22 @@ where
     }
 
     pub fn add(&mut self, value: T) {
+        if self.count + 1 >= self.items.len() {
+            self.items.push(T::default());
+        }
         
+        self.count += 1;
+        self.items[self.count] = value;
+
+        let mut current = self.count;
+        while current > 1 {
+            let parent = self.parent_idx(current);
+            if (self.comparator)(&self.items[parent], &self.items[current]) {
+                break;
+            }
+            self.items.swap(current, parent);
+            current = parent;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +72,18 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left_idx = self.left_child_idx(idx);
+        let right_idx = self.right_child_idx(idx);
+        
+        if right_idx > self.count {
+            return left_idx
+        }
+
+        if (self.comparator)(&self.items[left_idx], &self.items[right_idx]) {
+            left_idx
+        } else {
+            right_idx
+        }
     }
 }
 
@@ -84,8 +109,25 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+
+        self.items.swap(1, self.count);
+        let val = std::mem::take(&mut self.items[self.count]);
+        self.count -= 1;
+
+        let mut current = 1;
+        while self.children_present(current) {
+            let small_child = self.smallest_child_idx(current);
+            if (self.comparator)(&self.items[current], &self.items[small_child]) {
+                break;
+            }
+            self.items.swap(current, small_child);
+            current = small_child;
+        }
+
+        Some(val)
     }
 }
 

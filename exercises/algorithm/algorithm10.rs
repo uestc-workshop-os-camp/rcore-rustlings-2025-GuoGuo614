@@ -29,7 +29,30 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let (from, to, weight) = edge;
+        
+        if !self.contains(from) {
+            self.add_node(from);
+        }
+        if !self.contains(to) {
+            self.add_node(to);
+        }
+
+        if let Some(edges) = self.adjacency_table_mutable().get_mut(from) {
+            if let Some(existing_edge) = edges.iter_mut().find(|(node, _)| node == to) {
+                existing_edge.1 = weight;
+            } else {
+                edges.push((to.to_string(), weight));
+            }
+        }
+
+        if let Some(edges) = self.adjacency_table_mutable().get_mut(to) {
+            if let Some(existing_edge) = edges.iter_mut().find(|(node, _)| node == from) {
+                existing_edge.1 = weight;
+            } else {
+                edges.push((from.to_string(), weight));
+            }
+        }
     }
 }
 pub trait Graph {
@@ -37,21 +60,30 @@ pub trait Graph {
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
-        if self.nodes().contains(node) {
-            return false;
+        if self.contains(node) {
+            return false;    
         }
-        self.adjacency_table_mutable().insert(
-            node.to_string(),
-            self.nodes()
-                .iter()
-                .map(|name| (name.to_string(), 0))
-                .collect::<Vec<(String, i32)>>()
-        );
+
+        self.adjacency_table_mutable().insert(node.to_string(), Vec::new());
         true
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        let &mut map = self.adjacency_table_mutable();
+        let (from, to, weight) = edge;
         
+        if !self.contains(from) {
+            self.add_node(from);
+        }
+        if !self.contains(to) {
+            self.add_node(to);
+        }
+
+        if let Some(edges) = self.adjacency_table_mutable().get_mut(from) {
+            if let Some(existing_edge) = edges.iter_mut().find(|(node, _)| node == to) {
+                existing_edge.1 = weight;
+            } else {
+                edges.push((to.to_string(), weight));
+            }
+        }
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
@@ -88,6 +120,10 @@ mod test_undirected_graph {
             (&String::from("c"), &String::from("b"), 10),
         ];
         for edge in expected_edges.iter() {
+            // println!("{}", graph.edges().len());
+            // for (from, to, weight) in graph.edges() {
+            //     println!("{}, {}, {}", from, to, weight);
+            // }
             assert_eq!(graph.edges().contains(edge), true);
         }
     }
