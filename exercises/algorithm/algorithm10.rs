@@ -37,11 +37,21 @@ pub trait Graph {
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
-        //TODO
-		true
+        if self.nodes().contains(node) {
+            return false;
+        }
+        self.adjacency_table_mutable().insert(
+            node.to_string(),
+            self.nodes()
+                .iter()
+                .map(|name| (name.to_string(), 0))
+                .collect::<Vec<(String, i32)>>()
+        );
+        true
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let &mut map = self.adjacency_table_mutable();
+        
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()

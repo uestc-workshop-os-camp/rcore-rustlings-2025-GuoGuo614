@@ -23,7 +23,16 @@ impl Graph {
     }
 
     fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
-        //TODO
+        if visited.len() == self.adj.len() {
+            return;
+        }
+        visited.insert(v);
+        visit_order.push(v);
+        for &neibor in &self.adj[v] {
+            if !visited.contains(&neibor) {
+                self.dfs_util(neibor, visited, visit_order);
+            }
+        }
     }
 
     // Perform a depth-first search on the graph, return the order of visited nodes
