@@ -2,8 +2,6 @@
 //
 // No hints this time! ;)
 
-// I AM NOT DONE
-
 #[derive(Debug)]
 enum Message {
     // define a few types of messages as used below
