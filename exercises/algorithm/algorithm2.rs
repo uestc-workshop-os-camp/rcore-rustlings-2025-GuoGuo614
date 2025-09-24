@@ -79,7 +79,7 @@ impl<T> LinkedList<T> {
                 let node: *mut Node<T> = node_ptr.as_ptr();
                 let temp_next = (*node).next;
                 (*node).next = (*node).prev;
-                (*node).prev = temp;
+                (*node).prev = temp_next;
 
                 current = temp_next;
             }
